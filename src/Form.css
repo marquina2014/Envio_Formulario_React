@@ -7,7 +7,6 @@
     align-items: center;
     background: linear-gradient(to bottom, #ffffff, #ffffff);
     padding: 1rem;
- 
   }
   
   /* Caja del formulario */
@@ -22,18 +21,16 @@
     border: 1px solid rgb(0, 0, 0, 0.25);
   }
   
- /* Título rojo con letras blancas, tipo Power Apps */
-.form-title {
-
-    background-color: #c00; /* rojo fuerte */
+  /* Título rojo con letras blancas, tipo Power Apps */
+  .form-title {
+    background-color: #c00;
     color: white;
     padding: 1rem;
     text-align: center;
     font-size: 1.3rem;
     border-radius: 12px 12px 0 0;
-    margin: -2.5rem -2.5rem 1.5rem -2.5rem; /* sobresale para tocar bordes del contenedor */
+    margin: -2.5rem -2.5rem 1.5rem -2.5rem;
   }
-  
   
   /* Grupo de input */
   .input-group {
@@ -46,6 +43,7 @@
     font-weight: 600;
     margin-bottom: 0.3rem;
     color: #333;
+    font-size: 1rem; /* más grande que los inputs */
   }
   
   .input-group input {
@@ -53,9 +51,28 @@
     padding: 0.6rem 0.75rem;
     border: 1px solid #ccc;
     border-radius: 8px;
-    font-size: 1rem;
-    border: 1px solid rgb(0, 0, 0, 0.25);
+    font-size: 0.875rem; /* más pequeño */
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    max-height: 32px;
   }
+  
+  .input-group textarea {
+    font-family: 'Open Sans', sans-serif;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    font-size: 0.875rem; /* también más pequeño */
+    resize: none;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: white;
+    max-height: 80px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
   .submit-container {
     display: flex;
     justify-content: center;
@@ -63,7 +80,6 @@
   
   /* Botón enviar */
   .submit-btn {
-    
     width: 40%;
     padding: 0.75rem;
     background: #01ab8b;
@@ -75,25 +91,24 @@
     transition: 0.3s ease;
     margin-top: 1rem;
     min-height: 60px;
-    
   }
   
   .submit-btn:hover {
     opacity: 0.9;
   }
+  
   .submit-logo-container {
-    max-height: 90px;
+    max-height: 100px;
     display: flex;
-    justify-content: flex-end; /* Alinea a la derecha */
+    justify-content: flex-end;
     padding-right: 1rem;
     margin-top: 0.5rem;
   }
   
   .logo-img {
-    width: 90px;     /* Más pequeño */
-    height: auto;
+    width: 90px;
+    height: 50px;
     opacity: 0.9;
   }
-  
   
   
