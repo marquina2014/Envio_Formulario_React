@@ -20,7 +20,6 @@ const FormularioEmpleado = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos enviados:", formData);
-    // Aquí podrías guardar en SharePoint, API, etc.
   };
 
   return (
@@ -29,15 +28,41 @@ const FormularioEmpleado = () => {
         <h2 className="form-title">Ficha Empleado</h2>
 
         <form onSubmit={handleSubmit}>
-          <Input label="Nombres" name="nombres" value={formData.nombres} onChange={handleChange} />
-          <Input label="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange} />
-          <Input label="Apellido Materno" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange} />
-          <Input label="Numero de Identificación" name="identificacion" value={formData.identificacion} onChange={handleChange} />
-          <Input label="Fecha Nacimiento" name="fechaNacimiento" type="date" value={formData.fechaNacimiento} onChange={handleChange} />
-          <Input label="Dirección" name="direccion" value={formData.direccion} onChange={handleChange} />
-          <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} />
+          <div className="input-row">
+            <Input label="Nombres" name="nombres" value={formData.nombres} onChange={handleChange} />
+            <Input label="Número de Identificación" name="identificacion" value={formData.identificacion} onChange={handleChange} />
+          </div>
 
-          <button type="submit" className="submit-btn">Enviar</button>
+          <div className="input-row">
+            <Input label="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange} />
+            <Input label="Apellido Materno" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange} />
+          </div>
+
+          <div className="input-row">
+            <Input label="Fecha Nacimiento" name="fechaNacimiento" type="date" value={formData.fechaNacimiento} onChange={handleChange} />
+            <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} />
+          </div>
+
+          <div className="input-row">
+            <div className="input-group full-width">
+              <label htmlFor="direccion">Dirección</label>
+              <textarea
+                id="direccion"
+                name="direccion"
+                rows="4"
+                value={formData.direccion}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="submit-container">
+                <button type="submit" className="submit-btn">Enviar</button>
+            </div>
+            <div className="submit-logo-container">
+                <img src="/public/Poolso.jpg" alt="Logo" className="logo-img" />
+            </div>
         </form>
       </div>
     </div>
@@ -52,3 +77,4 @@ const Input = ({ label, name, value, onChange, type = "text" }) => (
 );
 
 export default FormularioEmpleado;
+

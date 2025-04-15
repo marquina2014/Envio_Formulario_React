@@ -1,7 +1,7 @@
 /* Fondo tipo login moderno */
 .form-page {
     font-family: 'Open Sans', sans-serif;
-    min-height: 100vh;
+    min-height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,10 +12,11 @@
   
   /* Caja del formulario */
   .form-box {
-    background: #edededd9;
+    background: #ffffffd9;
     padding: 2.5rem;
     border-radius: 16px;
     max-width: 800px;
+    max-height: 800px;
     width: 100%;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     border: 1px solid rgb(0, 0, 0, 0.25);
@@ -55,11 +56,15 @@
     font-size: 1rem;
     border: 1px solid rgb(0, 0, 0, 0.25);
   }
+  .submit-container {
+    display: flex;
+    justify-content: center;
+  }
   
   /* Botón enviar */
   .submit-btn {
     
-    width: 100%;
+    width: 40%;
     padding: 0.75rem;
     background: #01ab8b;
     color: white;
@@ -69,11 +74,26 @@
     cursor: pointer;
     transition: 0.3s ease;
     margin-top: 1rem;
+    min-height: 60px;
     
   }
   
   .submit-btn:hover {
     opacity: 0.9;
   }
+  .submit-logo-container {
+    max-height: 90px;
+    display: flex;
+    justify-content: flex-end; /* Alinea a la derecha */
+    padding-right: 1rem;
+    margin-top: 0.5rem;
+  }
+  
+  .logo-img {
+    width: 90px;     /* Más pequeño */
+    height: auto;
+    opacity: 0.9;
+  }
+  
   
   
