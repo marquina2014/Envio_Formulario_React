@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './Form.css' // O el nombre que tengas para los estilos globales
-import FormularioEmpleado from './Form.jsx' // Asegúrate que el nombre del archivo esté bien
+import Form from './Form.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <FormularioEmpleado />
+    <Form />
   </React.StrictMode>
 )

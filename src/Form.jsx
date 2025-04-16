@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Form.css";
 
-const FormularioEmpleado = () => {
+const Form = () => {
   const [formData, setFormData] = useState({
     nombres: "",
     apellidoPaterno: "",
@@ -17,9 +17,41 @@ const FormularioEmpleado = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  /*const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos enviados:", formData);
+  };*/
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const payload = {
+      ...formData,
+      guid: "8cb9339b-0ace-48a0-9634-318492e85641"
+    };
+  
+    try {
+      const response = await fetch(
+        "https://prod-11.brazilsouth.logic.azure.com:443/workflows/3c107311999e4a5a95844cb94b7ca510/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=GSHOjhmcbYb5CHQ4iB9dobXxTq3bhl9t4vn9mja7CeQ&path=/submit_ficha",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+  
+      if (response.ok) {
+        alert("Formulario enviado correctamente ✅");
+        console.log("Respuesta:", await response.json());
+      } else {
+        alert("Error al enviar ❌");
+        console.error("Error en respuesta:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      alert("Error de conexión ❌");
+    }
   };
 
   return (
@@ -76,5 +108,5 @@ const Input = ({ label, name, value, onChange, type = "text" }) => (
   </div>
 );
 
-export default FormularioEmpleado;
+export default Form;
 
