@@ -110,5 +110,23 @@
     height: 50px;
     opacity: 0.9;
   }
+  .enviado-box {
+    text-align: center;
+    padding: 3rem 2rem;
+  }
   
+  .enviado-icon {
+    margin-bottom: 1rem;
+  }
+  
+  .enviado-title {
+    color: #01ab8b;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .enviado-msg {
+    font-size: 1rem;
+    color: #333;
+  }
   
