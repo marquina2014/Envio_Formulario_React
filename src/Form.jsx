@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Form.css";
 import Enviado from "../Componentes/Enviado";
+import Loader from "../Componentes/Loader"; // <--- IMPORTANTE
 
 const Form = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const Form = () => {
   });
 
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // <--- NUEVO
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -31,6 +33,7 @@ const Form = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // <--- Mostramos loader
 
     try {
       const response = await fetch("https://prod-11.brazilsouth.logic.azure.com:443/workflows/3c107311999e4a5a95844cb94b7ca510/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=GSHOjhmcbYb5CHQ4iB9dobXxTq3bhl9t4vn9mja7CeQ&path=/submit_ficha", {
@@ -43,7 +46,7 @@ const Form = () => {
 
       if (response.ok) {
         setShowModal(true);
-        setFormData({
+        setFormData((prev) => ({
           nombres: "",
           apellidoPaterno: "",
           apellidoMaterno: "",
@@ -51,19 +54,23 @@ const Form = () => {
           fechaNacimiento: "",
           direccion: "",
           email: "",
-          guid: formData.guid, // conservamos el guid
-        });
+          guid: prev.guid,
+        }));
       } else {
         console.error("Error al enviar:", await response.text());
       }
     } catch (error) {
       console.error("Error de red:", error);
+    } finally {
+      setIsLoading(false); // <--- Ocultamos loader
     }
   };
 
   return (
     <div className="form-page">
       <div className="form-box">
+        {isLoading && <Loader />} {/* LOADER MIENTRAS CARGA */}
+
         {!showModal ? (
           <>
             <h2 className="form-title">Ficha Empleado</h2>
@@ -122,4 +129,5 @@ const Input = ({ label, name, value, onChange, type = "text" }) => (
 );
 
 export default Form;
+
 
