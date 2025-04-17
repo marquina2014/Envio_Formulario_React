@@ -3,7 +3,7 @@ import "./Form.css";
 import Enviado from "../Componentes/Enviado";
 import Loader from "../Componentes/Loader"; // <--- IMPORTANTE
 
-const Form = () => {
+const ValidateContract = () => {
   const [formData, setFormData] = useState({
     nombres: "",
     apellidoPaterno: "",
@@ -26,10 +26,10 @@ const Form = () => {
     }
   }, []);
 
-  const handleChange = (e) => {
+  /* const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  }; */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,35 +73,19 @@ const Form = () => {
 
         {!showModal ? (
           <>
-            <h2 className="form-title">Ficha Empleado</h2>
+            <h2 className="form-title">Validar Contrato</h2>
             <form onSubmit={handleSubmit}>
               <div className="input-row">
-                <Input label="Nombres" name="nombres" value={formData.nombres} onChange={handleChange} />
-                <Input label="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange} />
-              </div>
-
-              <div className="input-row">
-                <Input label="Apellido Materno" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange} />
-                <Input type="text" pattern="^(\d{1,3}(?:\.\d{1,3}){2}-[\dkK])$" label="Número de Identificación (RUT)" name="identificacion" value={formData.identificacion} onChange={handleChange} />
-              </div>
-
-              <div className="input-row">
-                <Input label="Fecha Nacimiento" name="fechaNacimiento" type="date" value={formData.fechaNacimiento} onChange={handleChange} />
-                <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} />
-              </div>
-
-              <div className="input-row">
-                <div className="input-group full-width">
-                  <label htmlFor="direccion">Dirección</label>
-                  <textarea
-                    id="direccion"
-                    name="direccion"
-                    rows="4"
-                    value={formData.direccion}
-                    onChange={handleChange}
-                    required
-                  />
+                {/* <Input label="Nombres" name="nombres" value={formData.nombres} onChange={handleChange} /> */}
+                
+                <div className="input-group">
+                    <label htmlFor="aprobacion">Finalizar Contratacion</label>
+                    <select>
+                    <option value="Aceptar">Aceptar Contrato</option>
+                    <option value="Rechazar">Rechazar Contrato</option>
+                </select>
                 </div>
+                
               </div>
 
               <div className="submit-container">
@@ -128,6 +112,6 @@ const Input = ({ label, name, value, onChange, type = "text", pattern }) => (
   </div>
 );
 
-export default Form;
+export default ValidateContract;
 
 

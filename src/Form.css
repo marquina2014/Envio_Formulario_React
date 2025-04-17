@@ -46,14 +46,14 @@
     font-size: 1rem; /* más grande que los inputs */
   }
   
-  .input-group input {
+  .input-group input, .input-group select {
     font-family: 'Open Sans', sans-serif;
     padding: 0.6rem 0.75rem;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 0.875rem; /* más pequeño */
     border: 1px solid rgba(0, 0, 0, 0.25);
-    max-height: 32px;
+    max-height: 40px;
   }
   
   .input-group textarea {
