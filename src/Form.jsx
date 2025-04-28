@@ -77,17 +77,17 @@ const Form = () => {
             <form onSubmit={handleSubmit}>
               <div className="input-row">
                 <Input label="Nombres" name="nombres" value={formData.nombres} onChange={handleChange} />
+                <Input label="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange} />
+                
+              </div>
+
+              <div className="input-row">
+                <Input label="Apellido Materno" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange} />
                 <Input label="Número de Identificación" name="identificacion" value={formData.identificacion} onChange={handleChange} />
               </div>
 
               <div className="input-row">
-                <Input label="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange} />
-                <Input label="Apellido Materno" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange} />
-              </div>
-
-              <div className="input-row">
                 <Input label="Fecha Nacimiento" name="fechaNacimiento" type="date" value={formData.fechaNacimiento} onChange={handleChange} />
-                <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} />
               </div>
 
               <div className="input-row">
