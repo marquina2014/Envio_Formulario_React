@@ -1,7 +1,32 @@
 import React, { useState, useEffect } from "react";
 import "./Form.css";
 import Enviado from "../Componentes/Enviado";
-import Loader from "../Componentes/Loader"; // <--- IMPORTANTE
+import Loader from "../Componentes/Loader";
+import Confirmacion from "../Componentes/Confirmacion";
+
+const countryCodes = [
+  { label: "USA +1", value: "+1" },
+  { label: "PR +1787", value: "+1787" },
+  { label: "RD +1809", value: "+1809" },
+  { label: "GUA +502", value: "+502" },
+  { label: "SAL +503", value: "+503" },
+  { label: "HON +504", value: "+504" },
+  { label: "NIC +505", value: "+505" },
+  { label: "CRC +506", value: "+506" },
+  { label: "PAN +507", value: "+507" },
+  { label: "PER +51", value: "+51" },
+  { label: "MEX +52", value: "+52" },
+  { label: "CU +53", value: "+53" },
+  { label: "ARG +54", value: "+54" },
+  { label: "BRA +55", value: "+55" },
+  { label: "CL +56", value: "+56" },
+  { label: "COL +57", value: "+57" },
+  { label: "VEN +58", value: "+58" },
+  { label: "BOL +591", value: "+591" },
+  { label: "ECU +593", value: "+593" },
+  { label: "PAR +595", value: "+595" },
+  { label: "URU +598", value: "+598" },
+];
 
 const Form = () => {
   const [formData, setFormData] = useState({
@@ -12,11 +37,14 @@ const Form = () => {
     fechaNacimiento: "",
     direccion: "",
     email: "",
+    telefonoCodigo: "+1",
+    telefonoNumero: "",
     guid: "",
   });
 
   const [showModal, setShowModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // <--- NUEVO
+  const [confirmData, setConfirmData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -28,24 +56,52 @@ const Form = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === "identificacion" && !/^\d*$/.test(value)) return;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true); // <--- Mostramos loader
+  const validateForm = () => {
+    const requiredFields = [
+      "nombres",
+      "apellidoPaterno",
+      "apellidoMaterno",
+      "telefonoNumero",
+      "identificacion",
+      "fechaNacimiento",
+      "direccion",
+    ];
+    for (let field of requiredFields) {
+      if (!formData[field].trim()) {
+        alert("Por favor completa todos los campos requeridos.");
+        return false;
+      }
+    }
+    return true;
+  };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const previewData = {
+      ...formData,
+      telefono: `${formData.telefonoCodigo}${formData.telefonoNumero}`,
+    };
+
+    setConfirmData(previewData);
+  };
+
+  const sendData = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("https://prod-11.brazilsouth.logic.azure.com:443/workflows/3c107311999e4a5a95844cb94b7ca510/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=GSHOjhmcbYb5CHQ4iB9dobXxTq3bhl9t4vn9mja7CeQ&path=/submit_ficha", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(confirmData),
       });
 
       if (response.ok) {
-        setShowModal(true);
+        setShowModal(true);  // Muestra el mensaje de enviado
         setFormData((prev) => ({
           nombres: "",
           apellidoPaterno: "",
@@ -54,6 +110,8 @@ const Form = () => {
           fechaNacimiento: "",
           direccion: "",
           email: "",
+          telefonoCodigo: "+1",
+          telefonoNumero: "",
           guid: prev.guid,
         }));
       } else {
@@ -62,27 +120,48 @@ const Form = () => {
     } catch (error) {
       console.error("Error de red:", error);
     } finally {
-      setIsLoading(false); // <--- Ocultamos loader
+      setIsLoading(false);
+      setConfirmData(null);
     }
   };
 
   return (
     <div className="form-page">
       <div className="form-box">
-        {isLoading && <Loader />} {/* LOADER MIENTRAS CARGA */}
+        {isLoading && <Loader />}
 
-        {!showModal ? (
+        {showModal ? (
+          <Enviado onClose={() => setShowModal(false)} />
+        ) : (
           <>
             <h2 className="form-title">Ficha Empleado</h2>
             <form onSubmit={handleSubmit}>
               <div className="input-row">
                 <Input label="Nombres" name="nombres" value={formData.nombres} onChange={handleChange} />
                 <Input label="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange} />
-                
               </div>
 
               <div className="input-row">
                 <Input label="Apellido Materno" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange} />
+              </div>
+
+              <div className="input-group">
+                <label>Número de Teléfono</label>
+                <div className="phone-row">
+                  <div className="input-group phone-code">
+                    <select name="telefonoCodigo" value={formData.telefonoCodigo} onChange={handleChange}>
+                      {countryCodes.map((item) => (
+                        <option key={item.value} value={item.value}>{item.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="input-group phone-number">
+                    <input type="text" name="telefonoNumero" value={formData.telefonoNumero} onChange={handleChange} required />
+                  </div>
+                </div>
+              </div>
+
+              <div className="input-row">
                 <Input label="Número de Identificación" name="identificacion" value={formData.identificacion} onChange={handleChange} />
               </div>
 
@@ -93,14 +172,7 @@ const Form = () => {
               <div className="input-row">
                 <div className="input-group full-width">
                   <label htmlFor="direccion">Dirección</label>
-                  <textarea
-                    id="direccion"
-                    name="direccion"
-                    rows="4"
-                    value={formData.direccion}
-                    onChange={handleChange}
-                    required
-                  />
+                  <textarea id="direccion" name="direccion" rows="4" value={formData.direccion} onChange={handleChange} required />
                 </div>
               </div>
 
@@ -109,13 +181,18 @@ const Form = () => {
               </div>
 
               <div className="submit-logo-container">
-              <img src="https://prod-26.brazilsouth.logic.azure.com:443/workflows/5cabd87481574a1699cda8924bf8bc39/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ZNP0yaN6HcEZ-aGOvauIdFUfJnWUNJC3-UWhd99H4Iw&path=/Poolso.jpg" alt="Logo" className="logo-img" />
-
+                <img src="https://prod-26.brazilsouth.logic.azure.com:443/workflows/5cabd87481574a1699cda8924bf8bc39/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ZNP0yaN6HcEZ-aGOvauIdFUfJnWUNJC3-UWhd99H4Iw&path=/Poolso.jpg" alt="Logo" className="logo-img" />
               </div>
             </form>
+
+            {confirmData && (
+              <Confirmacion
+                data={confirmData}
+                onConfirm={sendData}
+                onCancel={() => setConfirmData(null)}
+              />
+            )}
           </>
-        ) : (
-          <Enviado onClose={() => setShowModal(false)} />
         )}
       </div>
     </div>
@@ -130,5 +207,9 @@ const Input = ({ label, name, value, onChange, type = "text" }) => (
 );
 
 export default Form;
+
+
+
+
 
 

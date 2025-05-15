@@ -15,7 +15,7 @@
     padding: 2.5rem;
     border-radius: 16px;
     max-width: 800px;
-    max-height: 800px;
+    max-height: 820px;
     width: 100%;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     border: 1px solid rgb(0, 0, 0, 0.25);
@@ -33,53 +33,72 @@
   }
   
   /* Grupo de input */
-  .input-group {
+ .input-group {
     margin-bottom: 1.2rem;
     display: flex;
     flex-direction: column;
-  }
-  
-  .input-group label {
+}
+
+.input-group label {
     font-weight: 600;
     margin-bottom: 0.3rem;
     color: #333;
-    font-size: 1rem; /* más grande que los inputs */
-  }
-  
-  .input-group input {
-    font-family: 'Open Sans', sans-serif;
-    padding: 0.6rem 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 0.875rem; /* más pequeño */
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    max-height: 32px;
-  }
-  
-  .input-group textarea {
+    font-size: 1rem;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
     font-family: 'Open Sans', sans-serif;
     padding: 0.6rem 0.75rem;
     border: 1px solid rgba(0, 0, 0, 0.25);
     border-radius: 8px;
-    font-size: 0.875rem; /* también más pequeño */
+    font-size: 0.875rem;
+    box-sizing: border-box;
+}
+
+.input-group input,
+.input-group select {
+    max-height: 40px;
+}
+
+.input-group textarea {
     resize: none;
     width: 100%;
-    box-sizing: border-box;
     background-color: white;
     max-height: 80px;
-  }
-  
-  .full-width {
+}
+
+.full-width {
     width: 100%;
-  }
-  
-  .submit-container {
+}
+
+/* Fila teléfono alineada horizontalmente */
+.phone-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.phone-code {
+    flex: 0 0 110px;
+}
+
+.phone-number {
+    flex: 1;
+}
+
+.phone-code select,
+.phone-number input {
+    height: 40px;
+}
+
+.submit-container {
     display: flex;
     justify-content: center;
-  }
-  
-  /* Botón enviar */
-  .submit-btn {
+}
+
+.submit-btn {
     width: 40%;
     padding: 0.75rem;
     background: #01ab8b;
@@ -91,58 +110,35 @@
     transition: 0.3s ease;
     margin-top: 1rem;
     min-height: 60px;
-  }
-  
-  .submit-btn:hover {
+}
+
+.submit-btn:hover {
     opacity: 0.9;
-  }
-  
-  .submit-logo-container {
-    max-height: 100px;
+}
+
+/* Logo alineado abajo a la derecha dentro de la caja */
+.submit-logo-container {
     display: flex;
     justify-content: flex-end;
-    padding-right: 1rem;
-    margin-top: 0.5rem;
-  }
-  
-  .logo-img {
+    margin-top: 1rem;
+}
+
+.logo-img {
     width: 90px;
-    height: 50px;
+    height: auto;
     opacity: 0.9;
-  }
-  .enviado-box {
-    text-align: center;
-    padding: 3rem 2rem;
-  }
-  
-  .enviado-icon {
-    margin-bottom: 1rem;
-  }
-  
-  .enviado-title {
-    color: #01ab8b;
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .enviado-msg {
-    font-size: 1rem;
-    color: #333;
-  }
-  .loader-overlay {
+}
+
+.loader-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     background-color: rgba(255, 255, 255, 0.8);
-    z-index: 9999;
+    z-index: 10000;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
-  .loader-container {
-    background: transparent;
-  }
+}
   

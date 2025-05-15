@@ -14,7 +14,7 @@ const Enviado = () => {
           <FaCheckCircle size={60} color="#01ab8b" />
         </div>
         <div className="submit-logo-container">
-            <img src="/public/Poolso.jpg" alt="Logo" className="logo-img" />
+            <img src="https://prod-26.brazilsouth.logic.azure.com:443/workflows/5cabd87481574a1699cda8924bf8bc39/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ZNP0yaN6HcEZ-aGOvauIdFUfJnWUNJC3-UWhd99H4Iw&path=/Poolso.jpg" alt="Logo" className="logo-img" />
           </div>
       </div> 
 

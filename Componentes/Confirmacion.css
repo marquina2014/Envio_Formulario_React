@@ -1,0 +1,81 @@
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4); /* Semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.confirmation-box {
+    background: #fff;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Estilo del título igual que el formulario principal */
+.confirmation-box h3 {
+    background-color: #c00;
+    color: white;
+    padding: 1rem;
+    margin: 0;
+    font-size: 1.2rem;
+    border-radius: 12px 12px 0 0;
+}
+
+.confirmation-box ul {
+    list-style: none;
+    padding: 1rem 2rem;
+    text-align: left;
+    margin: 0;
+}
+
+.confirmation-box ul li {
+    margin-bottom: 0.5rem;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    padding: 1rem;
+}
+
+/* Botones del mismo tamaño */
+.button-row button {
+    flex: 1;
+    padding: 0.75rem 0;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s ease;
+    max-width: 150px;
+}
+
+/* Botón Confirmar (Verde) */
+.btn-confirm {
+    background-color: #01ab8b;
+}
+
+/* Botón Cancelar (Rojo) */
+.btn-cancel {
+    background-color: #c00;
+}
+
+/* Logo */
+.confirmation-logo {
+    width: 80px;
+    margin: 1rem auto;
+    opacity: 0.9;
+}
+
