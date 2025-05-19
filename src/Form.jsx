@@ -4,6 +4,25 @@ import Enviado from "../Componentes/Enviado";
 import Loader from "../Componentes/Loader";
 import Confirmacion from "../Componentes/Confirmacion";
 
+// Función para validar RUT chileno
+const validarRut = (rut) => {
+  rut = rut.replace(/[^0-9kK]/g, "").toUpperCase();
+  if (rut.length < 2) return false;
+  const cuerpo = rut.slice(0, -1);
+  let dv = rut.slice(-1);
+  let suma = 0;
+  let multiplo = 2;
+
+  for (let i = cuerpo.length - 1; i >= 0; i--) {
+    suma += parseInt(cuerpo[i]) * multiplo;
+    multiplo = multiplo < 7 ? multiplo + 1 : 2;
+  }
+
+  let dvEsperado = 11 - (suma % 11);
+  dvEsperado = dvEsperado === 11 ? "0" : dvEsperado === 10 ? "K" : dvEsperado.toString();
+  return dv === dvEsperado;
+};
+
 const countryCodes = [
   { label: "USA +1", value: "+1" },
   { label: "PR +1787", value: "+1787" },
@@ -42,6 +61,7 @@ const Form = () => {
     guid: "",
   });
 
+  const [rutError, setRutError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [confirmData, setConfirmData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,8 +76,12 @@ const Form = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "identificacion" && !/^\d*$/.test(value)) return;
+    if (name === "identificacion" && !/^[0-9kK\-\.]*$/.test(value)) return;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "identificacion") {
+      setRutError(""); // Limpiar mensaje mientras escribe
+    }
   };
 
   const validateForm = () => {
@@ -70,12 +94,19 @@ const Form = () => {
       "fechaNacimiento",
       "direccion",
     ];
+
     for (let field of requiredFields) {
       if (!formData[field].trim()) {
         alert("Por favor completa todos los campos requeridos.");
         return false;
       }
     }
+
+    if (!validarRut(formData.identificacion)) {
+      alert("El RUT ingresado no es válido.");
+      return false;
+    }
+
     return true;
   };
 
@@ -101,7 +132,7 @@ const Form = () => {
       });
 
       if (response.ok) {
-        setShowModal(true);  // Muestra el mensaje de enviado
+        setShowModal(true);
         setFormData((prev) => ({
           nombres: "",
           apellidoPaterno: "",
@@ -129,7 +160,6 @@ const Form = () => {
     <div className="form-page">
       <div className="form-box">
         {isLoading && <Loader />}
-
         {showModal ? (
           <Enviado onClose={() => setShowModal(false)} />
         ) : (
@@ -162,7 +192,25 @@ const Form = () => {
               </div>
 
               <div className="input-row">
-                <Input label="Número de Identificación" name="identificacion" value={formData.identificacion} onChange={handleChange} />
+                <div className="input-group">
+                  <label htmlFor="identificacion">Número de Identificación</label>
+                  <input
+                    type="text"
+                    id="identificacion"
+                    name="identificacion"
+                    value={formData.identificacion}
+                    onChange={handleChange}
+                    onBlur={() => {
+                      if (!validarRut(formData.identificacion)) {
+                        setRutError("Ingrese formato RUT con punto y digito verificador.");
+                      } else {
+                        setRutError("");
+                      }
+                    }}
+                    required
+                  />
+                  {rutError && <span className="error-message">{rutError}</span>}
+                </div>
               </div>
 
               <div className="input-row">
@@ -207,6 +255,7 @@ const Input = ({ label, name, value, onChange, type = "text" }) => (
 );
 
 export default Form;
+
 
 
 
