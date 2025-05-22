@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./Form.css";
 import Enviado from "../Componentes/Enviado";
-import Loader from "../Componentes/Loader";
 import Confirmacion from "../Componentes/Confirmacion";
+import Loader from "../Componentes/Loader";
+import ArchivosDesdeFlujo from "../Componentes/EnvioFlujos";
 
-// Función para validar RUT chileno
 const validarRut = (rut) => {
   rut = rut.replace(/[^0-9kK]/g, "").toUpperCase();
   if (rut.length < 2) return false;
@@ -12,59 +12,43 @@ const validarRut = (rut) => {
   let dv = rut.slice(-1);
   let suma = 0;
   let multiplo = 2;
-
   for (let i = cuerpo.length - 1; i >= 0; i--) {
     suma += parseInt(cuerpo[i]) * multiplo;
     multiplo = multiplo < 7 ? multiplo + 1 : 2;
   }
-
   let dvEsperado = 11 - (suma % 11);
   dvEsperado = dvEsperado === 11 ? "0" : dvEsperado === 10 ? "K" : dvEsperado.toString();
   return dv === dvEsperado;
 };
 
 const countryCodes = [
-  { label: "USA +1", value: "+1" },
-  { label: "PR +1787", value: "+1787" },
-  { label: "RD +1809", value: "+1809" },
-  { label: "GUA +502", value: "+502" },
-  { label: "SAL +503", value: "+503" },
-  { label: "HON +504", value: "+504" },
-  { label: "NIC +505", value: "+505" },
-  { label: "CRC +506", value: "+506" },
-  { label: "PAN +507", value: "+507" },
-  { label: "PER +51", value: "+51" },
-  { label: "MEX +52", value: "+52" },
-  { label: "CU +53", value: "+53" },
-  { label: "ARG +54", value: "+54" },
-  { label: "BRA +55", value: "+55" },
-  { label: "CL +56", value: "+56" },
-  { label: "COL +57", value: "+57" },
-  { label: "VEN +58", value: "+58" },
-  { label: "BOL +591", value: "+591" },
-  { label: "ECU +593", value: "+593" },
-  { label: "PAR +595", value: "+595" },
+  { label: "USA +1", value: "+1" }, { label: "PR +1787", value: "+1787" },
+  { label: "RD +1809", value: "+1809" }, { label: "GUA +502", value: "+502" },
+  { label: "SAL +503", value: "+503" }, { label: "HON +504", value: "+504" },
+  { label: "NIC +505", value: "+505" }, { label: "CRC +506", value: "+506" },
+  { label: "PAN +507", value: "+507" }, { label: "PER +51", value: "+51" },
+  { label: "MEX +52", value: "+52" }, { label: "CU +53", value: "+53" },
+  { label: "ARG +54", value: "+54" }, { label: "BRA +55", value: "+55" },
+  { label: "CL +56", value: "+56" }, { label: "COL +57", value: "+57" },
+  { label: "VEN +58", value: "+58" }, { label: "BOL +591", value: "+591" },
+  { label: "ECU +593", value: "+593" }, { label: "PAR +595", value: "+595" },
   { label: "URU +598", value: "+598" },
 ];
 
 const Form = () => {
   const [formData, setFormData] = useState({
-    nombres: "",
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-    identificacion: "",
-    fechaNacimiento: "",
-    direccion: "",
-    email: "",
-    telefonoCodigo: "+1",
-    telefonoNumero: "",
-    guid: "",
+    nombres: "", apellidoPaterno: "", apellidoMaterno: "",
+    identificacion: "", fechaNacimiento: "", direccion: "",
+    email: "", telefonoCodigo: "+1", telefonoNumero: "", guid: "",
   });
 
   const [rutError, setRutError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [confirmData, setConfirmData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [cargandoArchivos, setCargandoArchivos] = useState(true);
+  const [cantidadArchivos, setCantidadArchivos] = useState(0);
+  const [archivosBase64, setArchivosBase64] = useState({});
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -76,25 +60,16 @@ const Form = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "identificacion" && !/^[0-9kK\-\.]*$/.test(value)) return;
+    if (name === "identificacion" && !/^[0-9kK\-.]*$/.test(value)) return;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    if (name === "identificacion") {
-      setRutError(""); // Limpiar mensaje mientras escribe
-    }
+    if (name === "identificacion") setRutError("");
   };
 
   const validateForm = () => {
     const requiredFields = [
-      "nombres",
-      "apellidoPaterno",
-      "apellidoMaterno",
-      "telefonoNumero",
-      "identificacion",
-      "fechaNacimiento",
-      "direccion",
+      "nombres", "apellidoPaterno", "apellidoMaterno",
+      "telefonoNumero", "identificacion", "fechaNacimiento", "direccion"
     ];
-
     for (let field of requiredFields) {
       if (!formData[field].trim()) {
         alert("Por favor completa todos los campos requeridos.");
@@ -107,6 +82,13 @@ const Form = () => {
       return false;
     }
 
+    for (let key in archivosBase64) {
+      if (!archivosBase64[key]) {
+        alert("Debes subir todos los archivos requeridos.");
+        return false;
+      }
+    }
+
     return true;
   };
 
@@ -117,6 +99,7 @@ const Form = () => {
     const previewData = {
       ...formData,
       telefono: `${formData.telefonoCodigo}${formData.telefonoNumero}`,
+      archivos: archivosBase64,
     };
 
     setConfirmData(previewData);
@@ -134,17 +117,11 @@ const Form = () => {
       if (response.ok) {
         setShowModal(true);
         setFormData((prev) => ({
-          nombres: "",
-          apellidoPaterno: "",
-          apellidoMaterno: "",
-          identificacion: "",
-          fechaNacimiento: "",
-          direccion: "",
-          email: "",
-          telefonoCodigo: "+1",
-          telefonoNumero: "",
-          guid: prev.guid,
+          nombres: "", apellidoPaterno: "", apellidoMaterno: "",
+          identificacion: "", fechaNacimiento: "", direccion: "",
+          email: "", telefonoCodigo: "+1", telefonoNumero: "", guid: prev.guid,
         }));
+        setArchivosBase64({});
       } else {
         console.error("Error al enviar:", await response.text());
       }
@@ -159,7 +136,8 @@ const Form = () => {
   return (
     <div className="form-page">
       <div className="form-box">
-        {isLoading && <Loader />}
+        {(isLoading || cargandoArchivos) && <Loader />}
+
         {showModal ? (
           <Enviado onClose={() => setShowModal(false)} />
         ) : (
@@ -202,7 +180,7 @@ const Form = () => {
                     onChange={handleChange}
                     onBlur={() => {
                       if (!validarRut(formData.identificacion)) {
-                        setRutError("Ingrese formato RUT con punto y digito verificador.");
+                        setRutError("Ingrese formato RUT con punto y dígito verificador.");
                       } else {
                         setRutError("");
                       }
@@ -223,6 +201,12 @@ const Form = () => {
                   <textarea id="direccion" name="direccion" rows="4" value={formData.direccion} onChange={handleChange} required />
                 </div>
               </div>
+
+              <ArchivosDesdeFlujo
+                onArchivosChange={(n) => setCantidadArchivos(n)}
+                onBase64Change={(obj) => setArchivosBase64(obj)}
+                setCargando={setCargandoArchivos}
+              />
 
               <div className="submit-container">
                 <button type="submit" className="submit-btn">Enviar</button>
