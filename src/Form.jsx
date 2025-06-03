@@ -49,12 +49,49 @@ const Form = () => {
   const [cargandoArchivos, setCargandoArchivos] = useState(true);
   const [cantidadArchivos, setCantidadArchivos] = useState(0);
   const [archivosBase64, setArchivosBase64] = useState({});
+  const [archivosFlujo, setArchivosFlujo] = useState([]); // <- NUEVO
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const key = query.get("key");
     if (key) {
       setFormData((prev) => ({ ...prev, guid: key }));
+
+      const fetchDatos = async () => {
+        try {
+          const response = await fetch(`https://prod-10.brazilsouth.logic.azure.com:443/workflows/16a27eba30024fd89596e5b806f546d5/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qW9I-ARv0RLEg3o9jp3CZqO1CAtmCx9YNNkzbJe6DOw&key=${key}`);
+          const data = await response.json();
+
+          const archivos = JSON.parse(data.Archivos);
+          if (Array.isArray(archivos)) {
+            setArchivosFlujo(archivos);
+            setCantidadArchivos(archivos.length);
+          }
+
+          const datos = JSON.parse(data.Datos);
+          if (Array.isArray(datos) && datos.length > 0) {
+            const empleado = datos[0];
+            setFormData((prev) => ({
+              ...prev,
+              nombres: empleado.Nombres || "",
+              apellidoPaterno: empleado.Apellido_Paterno || "",
+              apellidoMaterno: empleado.Apellido_Materno || "",
+              identificacion: empleado.Identificacion || "",
+              fechaNacimiento: empleado.Fecha_Nacimiento || "",
+              direccion: empleado.Direccion || "",
+              email: empleado.Email || "",
+              telefonoCodigo: empleado.Numero_Telefono?.slice(0, 3) || "+1",
+              telefonoNumero: empleado.Numero_Telefono?.slice(3) || "",
+            }));
+          }
+        } catch (error) {
+          console.error("Error al cargar datos del flujo:", error);
+        } finally {
+          setCargandoArchivos(false);
+        }
+      };
+
+      fetchDatos();
     }
   }, []);
 
@@ -203,9 +240,9 @@ const Form = () => {
               </div>
 
               <ArchivosDesdeFlujo
+                archivos={archivosFlujo}
                 onArchivosChange={(n) => setCantidadArchivos(n)}
                 onBase64Change={(obj) => setArchivosBase64(obj)}
-                setCargando={setCargandoArchivos}
               />
 
               <div className="submit-container">
